@@ -158,6 +158,9 @@ skill_check_results.each do |result|
 
     msg = make_result_msg(result)
   msg += " >> paiza-Rating: #{old_user.rating.round.to_s.rjust(4)} -> #{user.rating.round.to_s.rjust(4)}"
+  if old_user.rating.round < user.rating.round
+    msg += " ↑"
+  end
   puts msg
   # puts "#{result[:date].strftime("%Y/%m/%d")}, #{result[:id]}, #{user.rating}"
 end
