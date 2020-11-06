@@ -85,11 +85,11 @@ def trim_title_data(title_data)
 end
 
 def trim_result_data(result_data)
-  language, time, performance, points = split_trim(result_data)
+  language, time, performance, score = split_trim(result_data)
   time = split_time(time)
   performance = performance[0]
-  points = points.delete("^0-9").to_i
-  { language: language, time: time, performance: performance, points: points }
+  score = score.delete("^0-9").to_i
+  { language: language, time: time, performance: performance, score: score }
 end
 
 def trim_aggregate_data(aggregate_data)
@@ -130,8 +130,8 @@ def make_result_msg(result)
     time = "-m--s"
   end
 
-  msg = "[#{date}] Task: #{result[:id]} 難易度:#{result[:level][0].to_s.rjust(4)} ±#{result[:level][1].to_s.rjust(2)} "
-  msg += " >> score: #{result[:points].to_s.rjust(3)} (#{time.to_s.rjust(7)})"
+  msg = "[#{date}] 問題: #{result[:id]} 難易度: #{result[:level][0].to_s.rjust(4)} ±#{result[:level][1].to_s.rjust(2)} "
+  msg += " >> score: #{result[:score].to_s.rjust(3)} (#{time.to_s.rjust(7)})"
 end
 
 PATH = "mydata.txt"
@@ -151,7 +151,7 @@ skill_check_results.each do |result|
   old_user = user.dup
   old_task = task.dup
 
-  win = result[:points] == 100 ? 1 : 0
+  win = result[:score] == 100 ? 1 : 0
   user.fight(old_task, win)
   icon =
 
@@ -159,21 +159,3 @@ skill_check_results.each do |result|
   msg += " >> paiza-Rating: #{old_user.rating.round.to_s.rjust(4)} -> #{user.rating.round.to_s.rjust(4)}"
   p msg
 end
-
-=begin
-user1 = GlickoPlayer.new(1500, 350)
-user2 = GlickoPlayer.new(1500, 350)
-
-10.times{
-print("[#{user1.rating}, #{user2.rating}, #{user1.rd}, #{user2.rd}], ")
-
-old_user1 = user1.dup
-old_user2 = user2.dup
-
-user1.fight(old_user2, 1)
-user2.fight(old_user1, 0)
-
-# puts "1: #{user1}"
-# puts "2: #{user2}"
-}
-=end
