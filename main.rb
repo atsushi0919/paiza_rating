@@ -122,7 +122,7 @@ def read_data
   trim_input_data(input_data)
 end
 
-def make_msg(result)
+def make_result_msg(result)
   date = result[:date].strftime("%Y-%m-%d")
   if result[:time][0] < 1000
     time = "#{result[:time][0].to_s.rjust(1, "0")}m#{result[:time][1].to_s.rjust(2, "0")}s"
@@ -130,7 +130,7 @@ def make_msg(result)
     time = "-m--s"
   end
 
-  msg = "[#{date}] #{result[:id]} 難易度:#{result[:level][0].to_s.rjust(4)} ±#{result[:level][1].to_s.rjust(2)} "
+  msg = "[#{date}] Task: #{result[:id]} 難易度:#{result[:level][0].to_s.rjust(4)} ±#{result[:level][1].to_s.rjust(2)} "
   msg += " >> score: #{result[:points].to_s.rjust(3)} (#{time.to_s.rjust(7)})"
 end
 
@@ -153,8 +153,10 @@ skill_check_results.each do |result|
 
   win = result[:points] == 100 ? 1 : 0
   user.fight(old_task, win)
+  icon =
 
-  msg = make_msg(result)
+    msg = make_result_msg(result)
+  msg += " >> paiza-Rating: #{old_user.rating.round.to_s.rjust(4)} -> #{user.rating.round.to_s.rjust(4)}"
   p msg
 end
 
