@@ -118,6 +118,7 @@ def trim_input_data(input_data)
 end
 
 def read_data
+  # input_data = readlines.map(&:chomp)
   input_data = File.open(PATH, "r") { |f| f.readlines }
   trim_input_data(input_data)
 end
@@ -131,7 +132,7 @@ def make_result_msg(result)
   end
 
   msg = "[#{date}] 問題: #{result[:id]} 難易度: #{result[:level][0].to_s.rjust(4)} ±#{result[:level][1].to_s.rjust(2)} "
-  msg += " >> score: #{result[:score].to_s.rjust(3)} (#{time.to_s.rjust(7)})"
+  msg += " >> lang: #{result[:language].ljust(7)} score: #{result[:score].to_s.rjust(3)} (#{time.to_s.rjust(7)})"
 end
 
 PATH = "mydata.txt"
@@ -157,5 +158,6 @@ skill_check_results.each do |result|
 
     msg = make_result_msg(result)
   msg += " >> paiza-Rating: #{old_user.rating.round.to_s.rjust(4)} -> #{user.rating.round.to_s.rjust(4)}"
-  p msg
+  puts msg
+  # puts "#{result[:date].strftime("%Y/%m/%d")}, #{result[:id]}, #{user.rating}"
 end
