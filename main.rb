@@ -154,9 +154,8 @@ skill_check_results.each do |result|
 
   win = result[:score] == 100 ? 1 : 0
   user.fight(old_task, win)
-  icon =
 
-    msg = make_result_msg(result)
+  msg = make_result_msg(result)
   msg += " >> paiza-Rating: #{old_user.rating.round.to_s.rjust(4)} -> #{user.rating.round.to_s.rjust(4)}"
   if old_user.rating.round < user.rating.round
     msg += " ↑"
