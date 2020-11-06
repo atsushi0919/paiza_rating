@@ -77,7 +77,9 @@ def split_time(time)
 end
 
 def trim_title_data(title_data)
-  title, date = title_data.split(",").map(&:strip)
+  title, date = title_data.split.map(&:strip)[1..-2]
+  p [title, date]
+  exit
   id = title[0..3]
   title = title[5..-1]
   date = Time.strptime(date, "%Y/%m/%d %H:%M")
@@ -135,7 +137,7 @@ def make_result_msg(result)
   msg += " >> lang: #{result[:language].ljust(7)} score: #{result[:score].to_s.rjust(3)} (#{time.to_s.rjust(7)})"
 end
 
-PATH = "mydata.txt"
+PATH = "mydata2.txt"
 skill_check_results = read_data.sort_by { |x| x[:date] }
 
 # user, task を初期化
