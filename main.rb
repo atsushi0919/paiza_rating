@@ -141,7 +141,7 @@ def make_result_msg(result)
   msg += " >> lang: #{result[:language].ljust(7)} score: #{result[:score].to_s.rjust(3)} (#{time.to_s.rjust(7)})"
 end
 
-PATH = "mydata2.txt"
+PATH = "mydata.txt"
 skill_check_results = read_data.sort_by { |x| x[:date] }
 
 # user, task を初期化
@@ -149,16 +149,22 @@ user = GlickoPlayer.new(750, 350)
 task = GlickoPlayer.new
 
 # スキルチェック結果を呼び出す
+win_count = { "S" => [0, 0], "A" => [0, 0], "B" => [0, 0], "C" => [0, 0], "D" => [0, 0] }
 skill_check_results.each do |result|
+  rank = result[:id][0]
   task.rating, task.rd = result[:level]
-
-  #puts "[#{user.rating.to_i}, #{task.rating}, #{user.rd.to_i}, #{task.rd.to_i]"
-  #puts "[#{user.rating.to_i}, #{user.rd.to_i}"
 
   old_user = user.dup
   old_task = task.dup
 
-  win = result[:score] == 100 ? 1 : 0
+  win_count[rank][1] += 1
+  if result[:score] == 100
+    win_count[rank][0] += 1
+    win = 1
+  else
+    win = 0
+  end
+
   user.fight(old_task, win)
 
   msg = make_result_msg(result)
@@ -169,3 +175,22 @@ skill_check_results.each do |result|
   puts msg
   # puts "#{result[:date].strftime("%Y/%m/%d")}, #{result[:id]}, #{user.rating}"
 end
+
+puts
+p_total = 0
+c_total = 0
+win_count.each do |key, val|
+  perfect = val[0].to_s.rjust(3)
+  challenge = val[1].to_s.rjust(3)
+  win_rate = (val[0] / val[1].to_f).round(2)
+  p_total += val[0]
+  c_total += val[1]
+
+  puts "#{key}ランク  perfect: #{perfect}  challenge: #{challenge}  win_rate: #{win_rate}"
+end
+
+puts "-----------------------------------------------------"
+r_total = (p_total / c_total.to_f).round(2)
+p_total = p_total.to_s.rjust(3)
+c_total = c_total.to_s.rjust(3)
+puts "TOTAL    perfect: #{p_total}  challenge: #{c_total}  win_rate: #{r_total}"
