@@ -68,39 +68,43 @@ end
 
 require "time"
 
-def split_trim(data)
-  data.split(",").compact.reject(&:empty?).map(&:strip)
+def split_trim(data, sep: nil)
+  data.split(sep).compact.reject(&:empty?).map(&:strip)
 end
 
 def split_time(time)
   time[0..-2].split("分").map(&:to_i)
 end
 
-def trim_title_data(title_data)
-  title, date = title_data.split.map(&:strip)[1..-2]
-  p [title, date]
-  exit
-  id = title[0..3]
-  title = title[5..-1]
+def trim_title_data(title_data, del_word: "提出日")
+  title, date = title_data.split("：").map(&:strip)
+  title = title.split[1]
+  if title.size == 2
+    title.delete!(del_word)
+  end
+  id, title = title.split(":")
   date = Time.strptime(date, "%Y/%m/%d %H:%M")
   { id: id, title: title, date: date }
 end
 
 def trim_result_data(result_data)
-  language, time, performance, score = split_trim(result_data)
-  time = split_time(time)
-  performance = performance[0]
-  score = score.delete("^0-9").to_i
+  #language, time, performance, score = split_trim(result_data)
+  result_data = split_trim(result_data)
+  language = result_data[2]
+  time = split_time(result_data[4])
+  performance = result_data[6][0]
+  score = result_data[8].delete("^0-9").to_i
   { language: language, time: time, performance: performance, score: score }
 end
 
 def trim_aggregate_data(aggregate_data)
-  level, count1, count2, correct_rate, avg_time, avg_point = split_trim(aggregate_data)
-  level = level.delete!("±").split.map(&:to_i)
-  count = (count1 + count2).delete("^0-9").to_i
-  correct_rate = correct_rate.delete("^[0-9|.]").to_f
-  avg_time = split_time(avg_time)
-  avg_point = avg_point.split[-1].to_f
+  # level, count1, count2, correct_rate, avg_time, avg_point = split_trim(aggregate_data)
+  aggregate_data = split_trim(aggregate_data, sep: " ")
+  level = aggregate_data[2..3].map { |x| x.delete("^0-9").to_i }
+  count = aggregate_data[5].delete("^0-9").to_i
+  correct_rate = aggregate_data[7].delete("^[0-9|.]").to_f
+  avg_time = split_time(aggregate_data[9])
+  avg_point = aggregate_data[11].delete("^[0-9|.]").to_f
   { level: level, count: count, correct_rate: correct_rate, avg_time: avg_time, avg_point: avg_point }
 end
 
