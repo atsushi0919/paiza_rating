@@ -180,6 +180,7 @@ puts
 p_total = 0
 c_total = 0
 win_count.each do |key, val|
+  next if val[1] == 0
   perfect = val[0].to_s.rjust(3)
   challenge = val[1].to_s.rjust(3)
   win_rate = (val[0] / val[1].to_f).round(2)
