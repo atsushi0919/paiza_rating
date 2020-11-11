@@ -174,6 +174,7 @@ skill_check_results.each do |result|
   end
   puts msg
   # puts "#{result[:date].strftime("%Y/%m/%d")}, #{result[:id]}, #{user.rating}"
+  # puts "#{user.rating.round}"
 end
 
 puts
